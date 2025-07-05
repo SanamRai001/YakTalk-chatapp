@@ -1,0 +1,15 @@
+@import "tailwindcss";
+/* inside index.css or style.css */
+html,
+body {
+  @apply h-full;
+}
+
+body, html{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+body {
+  box-sizing: border-box;
+}
