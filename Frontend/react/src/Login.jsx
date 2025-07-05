@@ -12,7 +12,7 @@
             if(userinfo.password <8){
               alert("Password must be of atleast 8 characters!");
             }
-            const res = await fetch("http://localhost:3000/login", {
+            const res = await fetch("https://yaktalk-chatapp.onrender.com/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(userinfo),

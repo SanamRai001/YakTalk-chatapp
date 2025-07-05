@@ -146,4 +146,4 @@ app.post('/signup', async(req, res)=>{
 });
 
 const port = 3000;
-server.listen(port, ()=>console.log("Server: http://localhost:3000"));
+server.listen(port, ()=>console.log("Server: https://yaktalk-chatapp.onrender.com/"));
