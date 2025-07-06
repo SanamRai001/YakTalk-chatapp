@@ -15,10 +15,10 @@ function Socket() {
   const [username, setUsername] = useState("");
   const navigate = useNavigate();
 
-    const BACKEND_URL = "https://yaktalk-chatapp.onrender.com/";
+    const BACKEND_URL = "https://yaktalk-chatapp.onrender.com";
 
   useEffect(() => {
-    const newsocket = io("${BACKEND_URL}chat", {
+    const newsocket = io("${BACKEND_URL}", {
       withCredentials: true,
     });
     setSocket(newsocket);
@@ -51,7 +51,7 @@ function Socket() {
   useEffect(() => {
     const checkChatAccess = async () => {
       try {
-        const res = await fetch("${BACKEND_UR}chat", {
+        const res = await fetch("${BACKEND_UR}", {
           credentials: "include",
         });
         if (!res.ok) throw new Error("Access Denied");

@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import userProfile from './assets/user-profile.png'; 
 function Signup(){
   const [userinfo, setUserinfo] = useState({name: "", password : ""});
-  const BACKEND_URL = "https://yaktalk-chatapp.onrender.com/";
+  const BACKEND_URL = "https://yaktalk-chatapp.onrender.com";
       const navigate = useNavigate();
         const handleSend = async(e)=>{
             e.preventDefault();
-            const res = await fetch("{BACKEND_URL}signup", {
+            const res = await fetch("{BACKEND_URL}/signup", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(userinfo),

@@ -5,7 +5,7 @@
 
     function Login(){
         const [userinfo, setUserinfo] = useState({name: "", password : ""});
-          const BACKEND_URL = "https://yaktalk-chatapp.onrender.com/";
+          const BACKEND_URL = "https://yaktalk-chatapp.onrender.com";
 
         const navigate = useNavigate(); 
 
@@ -14,7 +14,7 @@
             if(userinfo.password <8){
               alert("Password must be of atleast 8 characters!");
             }
-            const res = await fetch("${BACKEND_URL}login", {
+            const res = await fetch("${BACKEND_URL}/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(userinfo),
