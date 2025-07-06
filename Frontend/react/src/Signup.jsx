@@ -7,7 +7,7 @@ function Signup(){
       const navigate = useNavigate();
         const handleSend = async(e)=>{
             e.preventDefault();
-            const res = await fetch("{BACKEND_URL}/signup", {
+            const res = await fetch(`${BACKEND_URL}/signup`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(userinfo),
