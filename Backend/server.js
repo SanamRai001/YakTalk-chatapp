@@ -116,7 +116,6 @@ app.post('/login', async(req, res) => {
               httpOnly:true,
               secure: process.env.NODE_ENV ==='production',
               sameSite: "None",
-              domain: '.onrender.com',
               maxAge:8640000
           }).send("Logged in");
   
