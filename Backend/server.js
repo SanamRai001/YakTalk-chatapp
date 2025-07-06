@@ -11,7 +11,7 @@ const Token = process.env.PRIVATE_TOKEN;
 
 const app = express();
 app.use(cors({
-    origin: "http://localhost:5173", 
+    origin: process.env.FRONTEND_URL, 
   credentials: true
 }));
 app.use(express.json());
@@ -29,7 +29,7 @@ const User = require('./models/user');
 const server = http.createServer(app);
 const io = new Server(server, {
     cors:{
-        origin: 'http://localhost:5173',
+        origin: process.env.FRONTEND_URL,
         credentials: true,
         methods:['GET', 'POST']
     }
@@ -114,8 +114,8 @@ app.post('/login', async(req, res) => {
           const token = jwt.sign(payload, secret_key);
           res.cookie("token",token,{
               httpOnly:true,
-              secure: process.env.NODE_ENV || 'production',
-              sameSite: "strict",
+              secure: process.env.NODE_ENV ==='production',
+              sameSite: "None",
               maxAge:8640000
           }).send("Logged in");
   
@@ -145,5 +145,9 @@ app.post('/signup', async(req, res)=>{
     res.status(200).send("Sign UP succesfull!");
 });
 
-const port = 3000;
-server.listen(port, ()=>console.log("Server: https://yaktalk-chatapp.onrender.com/"));
+app.get('/health',(req, res)=>{
+    return res.status(200).send("Working Properly");
+})
+
+const port = process.env.PORT || 5000; 
+server.listen(port, () => console.log(`Server running on http://localhost:${port}`));
