@@ -51,7 +51,7 @@ function Socket() {
   useEffect(() => {
     const checkChatAccess = async () => {
       try {
-        const res = await fetch(`${BACKEND_URL}`, {
+        const res = await fetch(`${BACKEND_URL}/chat`, {
           credentials: "include",
         });
         if (!res.ok) throw new Error("Access Denied");
