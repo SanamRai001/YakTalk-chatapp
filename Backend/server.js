@@ -95,38 +95,95 @@ app.get('/chat',verifyToken,(request, respond)=>{
 
 });
 
-app.post('/login', async(req, res) => {
-  const { name, password } = req.body;
+// app.post('/login', async(req, res) => {
+//   const { name, password } = req.body;
 
-//   mongodb check of user
-  const user = await User.findOne({name: name});
-  if(!user){
-      return res.status(400).send("User not Found");
-    }
-    const hash_password  = user.password;
-    const isMatch = await bcrypt.compare(password, hash_password);
-    if(!isMatch){
-        return res.status(401).json({error:"Credentials does not match"});
-    }
-      try{
-          const payload = {name};
-          const secret_key = Token;
-          const token = jwt.sign(payload, secret_key);
-          res.cookie("token",token,{
-              httpOnly:true,
-              secure: process.env.NODE_ENV ==='production',
-              sameSite: "None",
-              maxAge:8640000
-          }).send("Logged in");
+// //   mongodb check of user
+//   const user = await User.findOne({name: name});
+//   if(!user){
+//       return res.status(400).send("User not Found");
+//     }
+//     const hash_password  = user.password;
+//     const isMatch = await bcrypt.compare(password, hash_password);
+//     if(!isMatch){
+//         return res.status(401).json({error:"Credentials does not match"});
+//     }
+//       try{
+//           const payload = {name};
+//           const secret_key = Token;
+//           const token = jwt.sign(payload, secret_key);
+//           res.cookie("token",token,{
+//               httpOnly:true,
+//               secure: process.env.NODE_ENV ==='production',
+//               sameSite: "None",
+//               maxAge:8640000
+//           }).send("Logged in");
   
-      }
-      catch(err){
-          console.error(err);
-          res.status(500).send("Server Error");
-      }
+//       }
+//       catch(err){
+//           console.error(err);
+//           res.status(500).send("Server Error");
+//       }
  
 
-  console.log(`${name} : ${password}`);
+//   console.log(`${name} : ${password}`);
+// });
+
+
+app.post('/login', async(req, res) => {
+    const { name, password } = req.body;
+    console.log(`[LOGIN TRACE] 1. Login attempt for user: ${name}`);
+
+    try {
+        const user = await User.findOne({name: name});
+        if (!user) {
+            console.log(`[LOGIN TRACE] 2. User not found: ${name}`);
+            return res.status(400).send("User not Found");
+        }
+        console.log(`[LOGIN TRACE] 3. User found: ${name}`);
+
+        const hash_password = user.password;
+        const isMatch = await bcrypt.compare(password, hash_password);
+        if (!isMatch) {
+            console.log(`[LOGIN TRACE] 4. Password mismatch for user: ${name}`);
+            return res.status(401).json({error:"Credentials does not match"});
+        }
+        console.log(`[LOGIN TRACE] 5. Password matched for user: ${name}`);
+
+        // --- Start of JWT and Cookie Setting Block ---
+        console.log(`[LOGIN TRACE] 6. Preparing JWT payload for user: ${name}`);
+        const payload = {name};
+
+        // Add this specific check for your JWT secret token
+        if (!process.env.PRIVATE_TOKEN) {
+            console.error('[LOGIN TRACE] ERROR: PRIVATE_TOKEN is not defined!'); // HIGHLY IMPORTANT
+            // Consider sending a specific error response if this happens in production
+            return res.status(500).send("Server configuration error: JWT secret missing.");
+        }
+        const secret_key = process.env.PRIVATE_TOKEN; // Ensure you're using process.env.PRIVATE_TOKEN directly here
+        console.log(`[LOGIN TRACE] 7. JWT secret loaded. Length: ${secret_key.length} (to check if it's not empty)`); // Check length, don't log actual secret
+
+        const token = jwt.sign(payload, secret_key);
+        console.log(`[LOGIN TRACE] 8. JWT token signed successfully for user: ${name}`); // This must appear if token is valid
+
+        console.log(`[LOGIN TRACE] 9. Attempting to set cookie for user: ${name}`); // This must appear right before res.cookie
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: "None",
+            maxAge: 8640000 // 100 days
+        });
+        console.log(`[LOGIN TRACE] 10. Cookie header set for user: ${name}`); // This means res.cookie was called
+
+        res.send("Logged in"); // Send the actual response
+
+        console.log(`[LOGIN TRACE] 11. Response sent for user: ${name}`); // This means the response was successfully sent
+
+    } catch (err) {
+        console.error(`[LOGIN TRACE] ERROR: An unhandled exception occurred for user ${name}:`, err.message, err.stack); // More detailed error logging
+        res.status(500).send("Server Error");
+    }
 });
 
 app.post('/signup', async(req, res)=>{
